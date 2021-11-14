@@ -1,0 +1,63 @@
+# 기본적인 Git Hub 사용법
+
+* ## 준비과정
+
+  git bash를 이용하여 로컬 저장소와 Github내 저장소를 연결
+
+  	 ```git init``` 을 통해 폴더내 파일들을 Github로 올릴 준비를 한다.
+  	 ```git remote add origin 저장소 주소``` 내 컴퓨터에 저장된 local 저장소와 github내 원격저장소를 연결시킨다.
+  	 현재 연결되어있는 저장소 주소를 볼려면 `git remote -v`를 사용하자.
+* ##  Local 저장소에서 Github 저장소로 올리기
+  ### 1. 최신문서들을 로컬저장소로 불러온다.
+  * ```git pull origin master``` 를 통해 최신 문서들을 로컬 저장소로 불러온다.
+  ### 2. 로컬 저장소의 문서들을 github내 저장소로 옮긴다.
+  * `git status`로 현재 로컬저장소내 파일 상태들을 확인한다.
+  * `git add 파일명 혹은 폴더명 ` 혹은 폴더내 파일 전체를 올리고 싶을 땐 `git add .`을 사용한다.
+  * `git commit -m "하고 싶은 말"`로 commit 메세지를 남긴다.
+  * `git push origin master`로 github내 저장소로 옮긴다.
+* ## 파일 삭제하기
+  * ### 로컬 저장소와 git 저장소에서 모두 삭제
+    * `git rm 파일명`
+    * `git commit -m "하고 싶은 말"`
+  * ### 로컬 저장소에서는 삭제X, git 에서만 삭제
+    * `git rm --cached 파일명`
+    * `git commit -m 파일명`
+* ## git remote 주소 취소하고 변경하기
+  * `git remote remove origin`으로 기존 저장소 remote제거
+  * `git remote add origin 저장소 주소`로 새로운 저장소 추가
+  
+* ## git init 충돌
+  push 하고자 하는 폴더에도 git init이 되어있고 push하고자 하는 폴더가 속해있는 상위폴더에도 git init이 되어있으면 충돌이 일어나므로 상위폴더에 있는 .git 폴더를 지운 후 push하고자 하는 폴더를 push한다.
+  
+* ## git add 취소하기(파일 상태를 Unstage로 변경하기)
+  ```git reset HEAD 파일명``` 명령어로 git add를 취소할 수 있다.
+  뒤에 파일 명이 없으면 add한 파일 전체를 취소한다.
+* ## git commit 취소하기
+  ```python
+  // [방법 1] commit을 취소하고 해당 파일들은 staged 상태로 워킹 디렉터리에 보존
+  $ git reset --soft HEAD^
+  // [방법 2] commit을 취소하고 해당 파일들은 unstaged 상태로 워킹 디렉터리에 보존
+  $ git reset --mixed HEAD^ // 기본 옵션
+  $ git reset HEAD^ // 위와 동일
+  $ git reset HEAD~2 // 마지막 2개의 commit을 취소
+  // [방법 3] commit을 취소하고 해당 파일들은 unstaged 상태로 워킹 디렉터리에서 삭제
+  $ git reset --hard HEAD^
+  ```
+
+
+
+
+
+* ## 자주 나오는 Error 메세지 대응
+
+  * ### fatal: The remote end hung up unexpectedly
+
+    크기가 1MB 보다 큰 파일이 있을 경우 이러한 error발생
+
+    :heavy_check_mark: **해결방안**: `git config --global http.postBuffer 20971520`을 사용하면 git 설정에서 개별 파일의 최대 크기를 늘려줌 (20971520 = 1024 * 1024 * 20)
+
+  * ### fatal: refusing to merge unrelated histories
+
+    repo 생성 시 .gitignore, README 파일등을 초기에 생성하고 git push 할 때 발생하는 문제
+
+    :heavy_check_mark: **해결방안**:  `git pull origin master(브런치명) --allow-unrelated-histories`
